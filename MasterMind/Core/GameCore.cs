@@ -33,7 +33,7 @@ namespace MasterMind.Core
                 string? input = Console.ReadLine()?.Trim();
                 if (string.IsNullOrEmpty(input)) continue;
 
-                if(!int.TryParse(input, out int id) && GameManager.IsGameStarting)
+                if (!int.TryParse(input, out int id) && GameManager.IsGameStarting && !input.StartsWith("!"))
                 {
                     continue;
                 }
