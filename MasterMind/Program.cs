@@ -17,25 +17,42 @@ public static class Program
     private static void SetUp()
     {
         manager.SetSetupState(false);
+
+        manager.Instruction();
+        
+        
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("Write your name/nickname");
-        string userName = GameCore.ReadPlayerInput();
-        if (userName.Length > 0 && userName[0] != '!')
+        while (true)
         {
-            manager.SetUserName(userName);
+            if(!manager.IsSetUpCompleted)
+            Console.WriteLine("How many rounds you want ? ");
+
+            string roundsWant = GameCore.ReadPlayerInput();
+
+
+
+            if (int.TryParse(roundsWant,out int rounds) && rounds <= 10)
+            {
+                manager.SetRounds(rounds);
+
+                manager.SetSetupState(true);
+
+                Console.WriteLine("Write !start to start the game");
+
+                Console.WriteLine("You can write !help to get all commands.");
+
+
+            }
+            else
+            {
+                Console.WriteLine("You can choose 10 or below rounds also just number no letters ");
+            }
+
+
         }
 
-        Console.WriteLine("How many rounds you want ? ");
-        string roundsWant = GameCore.ReadPlayerInput();
-        if(roundsWant.Length < 3)
-        {
-            manager.SetRounds(int.Parse(roundsWant));
-        }else
-        {
-            Console.WriteLine("Only 2 digits please");
-        }
-        manager.SetSetupState(true);
-        manager.StartGame();
+
+
     }
 
 }
