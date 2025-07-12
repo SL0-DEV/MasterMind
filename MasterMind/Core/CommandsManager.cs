@@ -9,11 +9,17 @@ namespace MasterMind.Core
     public class CommandsManager
     {
 
+        public GameCore gameCore(GameCore game)
+        {
+            m_core = game;
+            return m_core;
+        }
         public bool isReadingCommands = false;
 
 
         private string[] commands = {"!help","!restart","!exit","!setrounds","!stop", "!start"};
 
+        private GameCore m_core;
 
 
         /// <summary>
@@ -36,7 +42,7 @@ namespace MasterMind.Core
 
 
                     case "!restart":
-                        GameCore.GameManager.RestartTheGame();
+                        m_core.gameManager.RestartTheGame();
                         break;
 
 
@@ -46,29 +52,34 @@ namespace MasterMind.Core
 
 
                     case "!setrounds":
-                        if (GameCore.GameManager.IsGameStarting)
+                        if (m_core.gameManager.IsGameStarting)
                         {
                             Console.WriteLine("You can't change rounds while game is running");
                         }
                         else
                         {
                             Console.WriteLine("How many rounds you want");
-                            string input = GameCore.ReadPlayerInput();
-                            GameCore.GameManager.SetRounds(int.Parse(input));
+                            string input = m_core.ReadPlayerInput();
+                            m_core.gameManager.SetRounds(int.Parse(input));
                         }
                         break;
 
 
                     case "!stop":
-                        if(GameCore.GameManager.IsGameStarting)
-                        GameCore.GameManager.StopTheGame();
+                        if (m_core.gameManager.IsGameStarting)
+                        {
+                            m_core.gameManager.StopTheGame();
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("Game has been stopped");
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
                         break;
 
 
                     case "!start":
-                        if (!GameCore.GameManager.IsGameStarting)
+                        if (!m_core.gameManager.IsGameStarting)
                         {
-                            GameCore.GameManager.StartGame();
+                            m_core.gameManager.StartGame();
                         }
                         break;
                 }

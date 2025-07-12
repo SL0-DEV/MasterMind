@@ -10,22 +10,13 @@ namespace MasterMind.Core
 {
     public class GameManager
     {
-        public static GameManager? instance = null;
 
-        public static GameManager Instance
+
+        public GameCore gameCore(GameCore core)
         {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new GameManager();
-                }
-                return instance;
-            }
+            m_core = core;
+            return m_core;
         }
-
-
-
         #region Proprties
         public int Rounds { get; private set; }
         public string NumbersToGuess = "1234";
@@ -44,6 +35,8 @@ namespace MasterMind.Core
         private bool m_isGameOver = false;
         private bool m_isSetUpCompleted = false;
         private int m_currentRound = 0;
+        private GameCore m_core;
+
 
         private Random m_random = new Random();
         #endregion
@@ -64,7 +57,7 @@ namespace MasterMind.Core
             GameLoop();
 
 
-            GameCore.ReadPlayerInput();
+            m_core.ReadPlayerInput();
 
 
         }
@@ -92,7 +85,7 @@ namespace MasterMind.Core
 
 
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("A new paswword has been generated\ngood luck!");
+            Console.WriteLine("A new paswword has been generated\nGood Luck!");
         }
 
         /// <summary>
@@ -158,7 +151,7 @@ namespace MasterMind.Core
 
             m_CorrectNumberInPlace = 0;
             //Reading player input
-            string userInput = GameCore.ReadPlayerInput();
+            string userInput = m_core.ReadPlayerInput();
 
             //Making sure the input is correct and it's not null
             if (userInput.Length < 5 && userInput != null)
