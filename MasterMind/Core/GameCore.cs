@@ -81,11 +81,11 @@
                 if (!gameManager.IsSetUpCompleted)
                     Console.WriteLine("How many rounds you want ? ");
 
-                string roundsWant = ReadPlayerInput();
+                string roundsWanted = ReadPlayerInput();
 
 
 
-                if (int.TryParse(roundsWant, out int rounds) && rounds <= 10)
+                if (int.TryParse(roundsWanted, out int rounds) && rounds <= 10)
                 {
                     gameManager.SetRounds(rounds);
 

@@ -35,7 +35,7 @@ namespace MasterMind.Core
         private bool m_isGameOver = false;
         private bool m_isSetUpCompleted = false;
         private int m_currentRound = 0;
-        private GameCore m_core;
+        private GameCore? m_core;
 
 
         private Random m_random = new Random();

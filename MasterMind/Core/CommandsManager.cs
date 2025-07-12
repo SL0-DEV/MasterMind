@@ -19,7 +19,7 @@ namespace MasterMind.Core
 
         private string[] commands = {"!help","!restart","!exit","!setrounds","!stop", "!start"};
 
-        private GameCore m_core;
+        private GameCore? m_core;
 
 
         /// <summary>
