@@ -2,12 +2,19 @@
 Master mind is gussing 4 numbers game, the AI will generate number of 4 digits, the player needs to guess the correct number with correct digit placed.
 
 # Instructions
-- You have couple of ways to run the game
-  You can run by terminal to the path "MasterMind/MasterMind/bin/Release/"
+- Installing
   ``` bash
-  ./MasterMind.exe
+  git clone https://github.com/SL0-DEV/MasterMind.git
   ```
-  or you can just run MasterMind.exe in "MasterMind/MasterMind/bin/Release/"
+
+- Runnung
+  - You have couple of ways to run the game
+    
+   You can run by terminal to the path "MasterMind/MasterMind"
+  ``` bash
+  dotnet run
+  ```
+  
 # Commands 
 - !help : to show all the commands in the game
 - !setrounds : to modify the number of attempt
