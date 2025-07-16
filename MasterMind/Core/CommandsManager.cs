@@ -42,7 +42,7 @@ namespace MasterMind.Core
 
 
                     case "!restart":
-                        m_core.gameManager.RestartTheGame();
+                        m_core?.gameManager.RestartTheGame();
                         break;
 
 
