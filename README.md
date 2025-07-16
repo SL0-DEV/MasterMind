@@ -16,29 +16,54 @@ Master mind is gussing 4 numbers game, the AI will generate number of 4 digits, 
 - !start : to start the game, but you can't call it in the game
 
 # Technical Explanation & Main Mechanics
-- The game core will cover the player input and setup the game to be ready to play.
-
 [GameCore.cs](https://github.com/SL0-DEV/MasterMind/blob/main/MasterMind/Core/GameCore.cs)
 
+We made everything ready to the player by this function
 ```csharp
-   namespace MasterMind.Core
-{
-    public class GameCore
-    {
-        // We make a global instance of Commands Manager
-        public CommandsManager commandsManager { get; } = new CommandsManager();
+     gameManager.Instruction();
+
+
+            Console.ForegroundColor = ConsoleColor.White;
+            while (!gameManager.IsSetUpCompleted)
+            {
+                if (!gameManager.IsSetUpCompleted)
+                    Console.WriteLine("How many rounds you want ? ");
+
+                string roundsWanted = ReadPlayerInput();
 
 
 
-        // We make a global instace of Game Manager to give access for other scripts
-        public GameManager gameManager { get; } = new GameManager();
+                if (int.TryParse(roundsWanted, out int rounds) && rounds <= 10)
+                {
+                    gameManager.SetRounds(rounds);
+
+                    gameManager.SetSetupState(true);
+
+                    Console.WriteLine("Write !start to start the game");
+
+                    Console.WriteLine("You can write !help to get all commands.");
 
 
-        public void Validate()
-        {
-            gameManager.gameCore(this);
-            commandsManager.gameCore(this);
+                }
+                else
+                {
+                    Console.WriteLine("You can choose 10 or below rounds also just number no letters ");
+                }
+
+
+            }
+
+            ReadPlayerInput();
+
+
         }
+
+    }
+```
+
+We handle the player input and check if the player wants to call commands.
+
+```csharp
         /// <summary>
         /// This function will called on every value we want from player
         /// We make sure is the player calling a command even in the game
@@ -84,84 +109,11 @@ Master mind is gussing 4 numbers game, the AI will generate number of 4 digits, 
 
         }
 
-        /// <summary>
-        /// This function called once the app start
-        /// We make sure everything is goind well
-        /// Reading player name and how many rounds he wants to play
-        /// </summary>
-        public void SetUp()
-        {
-
-            gameManager.gameCore(this);
-            gameManager.SetSetupState(false);
-
-            gameManager.Instruction();
-
-
-            Console.ForegroundColor = ConsoleColor.White;
-            while (!gameManager.IsSetUpCompleted)
-            {
-                if (!gameManager.IsSetUpCompleted)
-                    Console.WriteLine("How many rounds you want ? ");
-
-                string roundsWant = ReadPlayerInput();
-
-
-
-                if (int.TryParse(roundsWant, out int rounds) && rounds <= 10)
-                {
-                    gameManager.SetRounds(rounds);
-
-                    gameManager.SetSetupState(true);
-
-                    Console.WriteLine("Write !start to start the game");
-
-                    Console.WriteLine("You can write !help to get all commands.");
-
-
-                }
-                else
-                {
-                    Console.WriteLine("You can choose 10 or below rounds also just number no letters ");
-                }
-
-
-            }
-
-            ReadPlayerInput();
-
-
-        }
-
-    }
-} 
 ```
-- Commands Manager is the game commands handler, when the player call a command the CommandsManager will proccess the command
 [CommandsManager.cs](https://github.com/SL0-DEV/MasterMind/blob/main/MasterMind/Core/CommandsManager.cs)
+
+We proccess the commands by this function
 ``` csharp
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MasterMind.Core
-{
-    public class CommandsManager
-    {
-
-        public GameCore gameCore(GameCore game)
-        {
-            m_core = game;
-            return m_core;
-        }
-        public bool isReadingCommands = false;
-
-
-        private string[] commands = {"!help","!restart","!exit","!setrounds","!stop", "!start"};
-
-        private GameCore m_core;
-
 
         /// <summary>
         /// This function called from other scripts to process any commands in the game
@@ -235,55 +187,10 @@ namespace MasterMind.Core
             isReadingCommands = true;
 
         }
-
-    }
-}
 ```
-- Game manager will handle the gameloop giving the player hint and counting the rounds.
 [Game Manager.cs](https://github.com/SL0-DEV/MasterMind/blob/main/MasterMind/Core/GameManager.cs)
+We call this function to run the game
 ``` csharp
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MasterMind.Core
-{
-    public class GameManager
-    {
-
-
-        public GameCore gameCore(GameCore core)
-        {
-            m_core = core;
-            return m_core;
-        }
-        #region Proprties
-        public int Rounds { get; private set; }
-        public string NumbersToGuess = "1234";
-        public bool IsSetUpCompleted => m_isSetUpCompleted;
-
-
-        public bool IsGameStarting => m_isGameStarting;
-
-        public bool IsGameOver => m_isGameOver;
-
-        #endregion
-        #region Private
-        private int m_CorrectNumberInPlace = 0;
-        private int m_CorrectNumberOutPlace = 0;
-        private bool m_isGameStarting = false;
-        private bool m_isGameOver = false;
-        private bool m_isSetUpCompleted = false;
-        private int m_currentRound = 0;
-        private GameCore m_core;
-
-
-        private Random m_random = new Random();
-        #endregion
         /// <summary>
         /// This function will called by another scripts to start the game
         /// We make sure the game is started to avoid overstart and crashes
@@ -305,33 +212,9 @@ namespace MasterMind.Core
 
 
         }
-
-        private void GeneratePassword()
-        {
-            for (int i = 0; i < NumbersToGuess.Length; i++)
-            {
-                char newValue = char.Parse(m_random.Next(0, 9).ToString());
-
-                if (NumbersToGuess.Contains(newValue))
-                {
-
-                    while (NumbersToGuess.Contains(newValue))
-                    {
-
-                        newValue = char.Parse(m_random.Next(0, 9).ToString());
-                    }
-                }
-
-                NumbersToGuess = NumbersToGuess.Replace(NumbersToGuess[i], newValue);
-
-
-            }
-
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("A new paswword has been generated\nGood Luck!");
-        }
-
+```
+This function give player instruction and example of game
+```csharp
         /// <summary>
         /// This function will give player instructions and introducing the game to him
         /// </summary>
@@ -359,8 +242,38 @@ namespace MasterMind.Core
 
             Console.ForegroundColor = ConsoleColor.White;
         }
+```
+We generate random password by this function
+```csharp
+private void GeneratePassword()
+        {
+            for (int i = 0; i < NumbersToGuess.Length; i++)
+            {
+                char newValue = char.Parse(m_random.Next(0, 9).ToString());
 
-        private void GameLoop()
+                if (NumbersToGuess.Contains(newValue))
+                {
+
+                    while (NumbersToGuess.Contains(newValue))
+                    {
+
+                        newValue = char.Parse(m_random.Next(0, 9).ToString());
+                    }
+                }
+
+                NumbersToGuess = NumbersToGuess.Replace(NumbersToGuess[i], newValue);
+
+
+            }
+
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("A new paswword has been generated\nGood Luck!");
+        }
+```
+This function handle the gameloop
+```csharp
+private void GameLoop()
         {
             while (!IsGameOver)
             {
@@ -441,63 +354,8 @@ namespace MasterMind.Core
             }
 
         }
-
-        /// <summary>
-        /// This function will call by the commands to restart the game
-        /// </summary>
-        public void RestartTheGame()
-        {
-            m_isGameOver = false;
-
-            m_isGameStarting = false;
-
-            m_currentRound = 0;
-
-            m_CorrectNumberOutPlace = 0;
-
-            m_CorrectNumberInPlace = 0;
-
-            Console.Clear();
-
-            StartGame();
-        }
-        /// <summary>
-        /// This function will force the game to be stopped
-        /// </summary>
-        public void StopTheGame()
-        {
-            m_isGameStarting=false;
-
-            m_isGameOver=true;
-
-            m_currentRound=0;
-
-            m_CorrectNumberInPlace = 0;
-
-            m_CorrectNumberOutPlace = 0;
-
-        }
-        /// <summary>
-        /// Giving the setup state to make sure is the player has finished the setup
-        /// </summary>
-        /// <param name="state"></param>
-        public void SetSetupState(bool state)
-        {
-            m_isSetUpCompleted = state;
-        }
-
-        /// <summary>
-        /// Set the rounds of the game in realtime or at the start of the app
-        /// </summary>
-        /// <param name="newRounds"></param>
-        public  void SetRounds(int newRounds)
-        {
-            Rounds = newRounds;
-        }
-
-    }
-}
 ```
+
 # Contact me
 [![X](https://img.shields.io/badge/X-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://x.com/slo_dev)
 [![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/sl0.dev)
